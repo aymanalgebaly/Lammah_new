@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="40dp"
+    app:cardCornerRadius="4dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginBottom="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/strok">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:id="@+id/txt_title_cart"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_des_cart"
+                android:gravity="center"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/gray">
+            </View>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:id="@+id/img_product_cart"
+                    android:layout_weight="0.9"/>
+
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1.1"
+                    android:orientation="vertical"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:text="سعر المنتج"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:text="الكميه"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:text="اجمالي السعر"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="2"
+                    android:orientation="vertical"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:paddingStart="7dp"
+                        android:paddingEnd="7dp"
+                        android:gravity="center"
+                        android:id="@+id/txt_price_value"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:textStyle="bold"
+                        android:layout_gravity="end"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="1.6">
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.3"
+                            android:id="@+id/btn_min"
+                            android:background="@color/green"
+                            android:drawableBottom="@drawable/ic_chevron_right_black_24dp"
+                            android:padding="4dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="1"
+                            android:id="@+id/txt_num_value"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.3"
+                            android:id="@+id/btn_plus"
+                            android:background="@color/green"
+                            android:drawableBottom="@drawable/ic_chevron_left_black_24dp"
+                            android:padding="4dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:gravity="center"
+                        android:id="@+id/txt_total_price_value"
+                        android:textSize="16sp"
+                        android:textColor="@color/green"
+                        android:layout_marginEnd="10dp"
+                        android:paddingEnd="7dp"
+                        android:paddingStart="7dp"
+                        android:layout_marginStart="10dp"
+                        android:textStyle="bold"
+                        android:layout_gravity="end"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/gray">
+
+            </View>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textColor="@color/white"
+                android:layout_margin="5dp"
+                android:drawableBottom="@drawable/ic_delete_forever_black_24dp"
+                android:paddingBottom="5dp"
+                android:id="@+id/btn_delete"
+                android:background="@color/red"/>
+        </LinearLayout>
+    </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

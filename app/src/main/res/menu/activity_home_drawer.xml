@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="الرئيسية"/>
+        <item
+            android:id="@+id/nav_favorite"
+            android:icon="@drawable/heart"
+            android:title="المفضلة" />
+
+        <item
+            android:id="@+id/nav_categories"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:title="التصنيفات" />
+        <item
+            android:id="@+id/nav_orderHistory"
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="السجل" />
+        <item
+            android:id="@+id/nav_star"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="أعلى التقييمات" />
+
+        <item
+            android:id="@+id/nav_most_sales"
+            android:icon="@drawable/ic_attach_money_black_24dp"
+            android:title="معظم المبيعات" />
+
+        <item
+            android:id="@+id/nav_about_us"
+            android:icon="@drawable/ic_help_outline_black_24dp"
+            android:title="معلومات عنا" />
+    </group>
+
+</menu>

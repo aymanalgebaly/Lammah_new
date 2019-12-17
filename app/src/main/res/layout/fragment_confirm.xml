@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.ConfirmFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="ادخل عنوانك"
+        android:paddingStart="5dp"
+        android:id="@+id/ed_address"
+        android:paddingEnd="5dp"/>
+    <!-- TODO: Update blank fragment layout -->
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="50dp"
+        android:id="@+id/rcv_confirm">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="اجمالي السعر"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/green"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:id="@+id/txt_total_value"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/green"/>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:gravity="bottom">
+
+        <RadioGroup
+            android:id="@+id/lin_one"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/search_radio_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/cash"
+                android:layout_marginTop="7dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                tools:ignore="RtlHardcoded" />
+
+            <RadioButton
+                android:id="@+id/adv_search_radio_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/credit_card"
+                android:textStyle="bold"
+                android:layout_marginTop="7dp"
+                android:textSize="16sp"
+                android:layout_marginStart="10dp"
+                tools:ignore="RtlHardcoded" />
+
+        </RadioGroup>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/colorPrimaryDark"
+            android:text="تاكيد الشراء"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_marginBottom="25dp"
+            android:layout_below="@id/lin_one"
+            android:layout_marginTop="25dp"
+            android:id="@+id/btn_confirm"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

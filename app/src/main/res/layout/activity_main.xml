@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activities.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/splash_new"
+        android:id="@+id/rel">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lin"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="130dp"
+                android:background="@drawable/lammah"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"/>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lin"
+        android:orientation="horizontal"
+        android:id="@+id/lin_one"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="تسجيل الدخول للاستمرار"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="30dp"
+            android:orientation="vertical"
+            android:layout_marginEnd="50dp"
+            android:background="@color/colorPrimaryDark">
+
+        </View>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lin_one"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/lin_two">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:id="@+id/ed_username"
+            android:hint="البريد الالكتروني او الاسم المستعار"
+            android:layout_gravity="start"
+            android:gravity="start"
+            android:inputType="textNoSuggestions"
+            android:drawableEnd="@drawable/ic_person_black_24dp"
+            android:drawablePadding="5dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:paddingStart="5dp"
+            android:id="@+id/ed_password"
+            android:layout_marginTop="50dp"
+            android:paddingEnd="5dp"
+            android:hint="كلمة المرور"
+            android:inputType="textPassword"
+            android:drawableEnd="@drawable/ic_lock_black_24dp"
+            android:drawablePadding="5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="هل نسيت كلمة المرور ؟"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:id="@+id/txt_forgot"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"/>
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="70dp"
+            android:background="@color/colorPrimary"
+            android:text="تسجيل الدخول"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:id="@+id/btn_login"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="1dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="تسجيل"
+                    android:textColor="@color/black"
+                    android:id="@+id/txt_register"/>
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="1dp"
+                    android:background="@color/black">
+
+                </View>
+
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="ليس لديك حساب ؟"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="تسجيل الدخول بواسطة"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="15dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:id="@+id/img_instagram"
+                android:background="@drawable/instagram"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:id="@+id/img_twitter"
+                android:background="@drawable/twitter"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:id="@+id/img_facebook"
+                android:background="@drawable/facebook_three"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:id="@+id/img_google_plus"
+                android:background="@drawable/google_plus"/>
+        </LinearLayout>
+    </LinearLayout>
+    </RelativeLayout>
+
+</ScrollView>
