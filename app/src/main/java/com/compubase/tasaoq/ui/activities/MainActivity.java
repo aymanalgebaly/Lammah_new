@@ -47,14 +47,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnLogin;
     @BindView(R.id.txt_register)
     TextView txtRegister;
-    @BindView(R.id.img_instagram)
-    CircleImageView imgInstagram;
-    @BindView(R.id.img_twitter)
-    CircleImageView imgTwitter;
-    @BindView(R.id.img_facebook)
-    CircleImageView imgFacebook;
-    @BindView(R.id.img_google_plus)
-    CircleImageView imgGooglePlus;
+
     @BindView(R.id.lin_two)
     LinearLayout linTwo;
     @BindView(R.id.progress_bar)
@@ -73,18 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         preferences = getSharedPreferences("user", MODE_PRIVATE);
-        login_user = preferences.getBoolean("login", true);
-
-//        if (login_user){
-//            startActivity(new Intent(MainActivity.this,HomeActivity.class));
-//        }else {
-//
-//        }
 
         progressBar.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.txt_forgot, R.id.btn_login, R.id.txt_register, R.id.img_instagram, R.id.img_twitter, R.id.img_facebook, R.id.img_google_plus})
+    @OnClick({R.id.txt_forgot, R.id.btn_login, R.id.txt_register})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_forgot:
@@ -94,14 +80,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.txt_register:
                 startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-                break;
-            case R.id.img_instagram:
-                break;
-            case R.id.img_twitter:
-                break;
-            case R.id.img_facebook:
-                break;
-            case R.id.img_google_plus:
                 break;
         }
     }
@@ -128,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
                     assert response.body() != null;
                     try {
 
-                        List<LoginModel> loginModelList = Arrays.asList(gson.fromJson(response.body().string(), LoginModel[].class));
+                        List<LoginModel> loginModelList =
+                                Arrays.asList(gson.fromJson(response.body().string(), LoginModel[].class));
                         if (response.isSuccessful()) {
 
                             progressBar.setVisibility(View.VISIBLE);
@@ -142,14 +121,13 @@ public class MainActivity extends AppCompatActivity {
                             sharedLogin();
 
                             startActivity(new Intent(MainActivity.this,HomeActivity.class));
-                            finish();
 
-//                            Toast.makeText(LoginActivity.this, fb, Toast.LENGTH_SHORT).show();
+                            finish();
 
                         }
 
                     } catch (Exception e) {
-                        Toast.makeText(MainActivity.this, "Wrong Email or Pass", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "خطأ في البريد الالكتروني او كلمة المرور", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -178,12 +156,10 @@ public class MainActivity extends AppCompatActivity {
 
         editor.apply();
     }
+
     @Override
-    public void onBackPressed() {
-        Intent a = new Intent(Intent.ACTION_MAIN);
-        a.addCategory(Intent.CATEGORY_HOME);
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(a);
+    protected void onResume() {
+        super.onResume();
     }
 }
 

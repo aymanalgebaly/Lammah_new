@@ -14,10 +14,10 @@
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:largeHeap="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/lammah"
         android:label="@string/app_name"
         tools:targetApi="m"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/lammah"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">

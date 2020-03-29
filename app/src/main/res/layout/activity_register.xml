@@ -4,25 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/splash_new"
     tools:context=".ui.activities.RegisterActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/splash_new"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="130dp"
+            android:background="@drawable/logo_png"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"/>
 
             <EditText
                 android:id="@+id/input_username"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
                 android:paddingEnd="10dp"
                 android:background="@drawable/login_field_design"
                 android:inputType="textPersonName"
                 android:hint="الاسم"
-                android:layout_marginTop="150dp"
+                android:layout_marginTop="50dp"
                 android:paddingStart="10dp"
                 tools:ignore="RtlSymmetry" />
 
@@ -31,9 +38,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:paddingStart="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="50dp"
                 android:paddingEnd="10dp"
                 android:background="@drawable/login_field_design"
                 android:hint="البريد الالكتروني"
@@ -47,9 +54,9 @@
                 android:hint="رقم الهاتف"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="50dp"
                 android:background="@drawable/login_field_design"
                 tools:ignore="RtlSymmetry" />
 
@@ -59,25 +66,65 @@
                 android:layout_height="40dp"
                 android:hint="كلمه المرور"
                 android:paddingStart="10dp"
-                android:layout_marginStart="10dp"
+                android:gravity="end|center_vertical"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
+                android:inputType="textPassword"
+                android:layout_marginEnd="50dp"
                 android:paddingEnd="10dp"
                 android:background="@drawable/login_field_design"
                 tools:ignore="RtlSymmetry" />
 
+        <EditText
+            android:id="@+id/input_con_password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="تاكيد كلمه المرور"
+            android:paddingStart="10dp"
+            android:gravity="end|center_vertical"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:inputType="textPassword"
+            android:layout_marginEnd="50dp"
+            android:paddingEnd="10dp"
+            android:background="@drawable/login_field_design"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="بتسجيلك حساب جديد انت توافق علي شروط استخدام التطبيق"/>
+
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_marginStart="50dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:background="@color/colorPrimary"
                 android:text="تسجيل الدخول"
                 android:id="@+id/btn_register"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/blue"
+            android:text=" تسجيل الدخول باستخدام الفيس بوك"
+            android:id="@+id/btn_register_face"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
     </LinearLayout>
 
 </ScrollView>

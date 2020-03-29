@@ -23,6 +23,7 @@ import com.compubase.tasaoq.data.API;
 import com.compubase.tasaoq.helper.RetrofitClient;
 import com.compubase.tasaoq.model.CategoriesModel;
 import com.compubase.tasaoq.model.ProductsModel;
+import com.compubase.tasaoq.ui.activities.HomeActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -34,6 +35,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,9 +66,15 @@ public class HomeFragment extends Fragment {
     private String id;
     private Integer id_pro;
 
+
+    private static final String TAG = "HomeFragment";
+
+
     public HomeFragment() {
         // Required empty public constructor
     }
+
+
 
 
     @Override
@@ -87,6 +96,15 @@ public class HomeFragment extends Fragment {
 
             flipperImage(image);
         }
+
+
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+
+        Realm.init(getActivity());
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<ProductsModel> all = realm.where(ProductsModel.class).findAll();
+        homeActivity.cartBadge.setText(String.valueOf(all.size()));
+
 
         setupRecycler();
         setupRecyclerTopRated();
@@ -162,14 +180,9 @@ public class HomeFragment extends Fragment {
 
                             id_pro = productsModels.get(j).getId();
 
-                            Log.i( "onResponse", String.valueOf(productsModels.get(j).getId()));
-
                             productsModelArrayList.add(productsModelsList);
-                            Log.i("onResponseHome",productsModelArrayList.toString());
                         }
-                        topRatedAdapter = new TopRatedAdapter(productsModelArrayList);
-                        rcvTopRated.setAdapter(topRatedAdapter);
-                        topRatedAdapter.notifyDataSetChanged();
+                        topRatedAdapter.setDataList(productsModelArrayList);
 
                     }
                 } catch (IOException e) {
@@ -191,9 +204,9 @@ public class HomeFragment extends Fragment {
 
         GridLayoutManager linearLayoutManager = new GridLayoutManager(getActivity(),2);
         rcvTopRated.setLayoutManager(linearLayoutManager);
-//        topRatedAdapter = new TopRatedAdapter(getActivity());
-//        rcvTopRated.setAdapter(topRatedAdapter);
-//        topRatedAdapter.notifyDataSetChanged();
+        topRatedAdapter = new TopRatedAdapter(getActivity());
+        rcvTopRated.setAdapter(topRatedAdapter);
+        topRatedAdapter.notifyDataSetChanged();
     }
 
     private void flipperImage(int image) {

@@ -22,14 +22,14 @@ public interface API {
     );
 
     @FormUrlEncoded
-    @POST("sendactivemail")
+    @POST("sendactivemail9")
     Call<ResponseBody>SendSMS(
             @Field("email") String email
     );
 
     @FormUrlEncoded
     @POST("entercode_activemail")
-    Call<ResponseBody>EnterCode(
+    Call<String>EnterCode(
             @Field("enter_code") String code
     );
 
@@ -66,7 +66,8 @@ public interface API {
     @POST("select_all_product_by_category")
     Call<ResponseBody>showCategory(
             @Field("id_admin") String id_admin,
-            @Field("category") String category
+            @Field("category") String category,
+            @Field("id_user") String id_user
     );
     @FormUrlEncoded
     @POST("update_user")

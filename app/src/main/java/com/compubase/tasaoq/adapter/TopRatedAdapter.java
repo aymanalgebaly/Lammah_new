@@ -47,6 +47,11 @@ public class TopRatedAdapter extends RecyclerView.Adapter<TopRatedAdapter.ViewHo
         this.productsModels = productsModels;
     }
 
+    public void setDataList(List<ProductsModel> productsModels) {
+        this.productsModels = productsModels;
+        notifyDataSetChanged();
+    }
+
     public TopRatedAdapter(Context context) {
         this.context = context;
     }
@@ -69,7 +74,16 @@ public class TopRatedAdapter extends RecyclerView.Adapter<TopRatedAdapter.ViewHo
         viewHolder.txt_discount.setText(s);
         viewHolder.offer_sale.setText(productsModel.getPriceDiscount());
         viewHolder.offer.setText(productsModel.getPrice());
-        viewHolder.ratingBar.setRating(Float.parseFloat(productsModel.getRate()));
+
+        String rate = productsModel.getRate();
+
+        if (rate.equals("")){
+            viewHolder.ratingBar.setRating(0);
+        }else {
+
+            viewHolder.ratingBar.setRating(Float.parseFloat(rate));
+
+        }
         viewHolder.title.setText(productsModel.getTitle());
 
 //        Glide.with(context).load(productsModel.getImg1()).placeholder(R.drawable.heart).into(viewHolder.heart);

@@ -1,5 +1,7 @@
 package com.compubase.tasaoq.ui.activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -8,27 +10,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.compubase.tasaoq.R;
 import com.compubase.tasaoq.model.ProductsModel;
 import com.compubase.tasaoq.ui.fragments.AboutUsFragment;
 import com.compubase.tasaoq.ui.fragments.CartFragment;
-import com.compubase.tasaoq.ui.fragments.CategoriesFragment;
 import com.compubase.tasaoq.ui.fragments.FavoritesFragment;
 import com.compubase.tasaoq.ui.fragments.HistoryFragment;
 import com.compubase.tasaoq.ui.fragments.HomeFragment;
-import com.compubase.tasaoq.ui.fragments.MostSalesFragment;
 import com.compubase.tasaoq.ui.fragments.ProfileFragment;
-import com.compubase.tasaoq.ui.fragments.SelectedItemFragment;
-import com.compubase.tasaoq.ui.fragments.TopRatedFragment;
-import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.util.Objects;
 
@@ -37,61 +35,60 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmResults;
-//import io.realm.Realm;
-//import io.realm.RealmResults;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.cart_img)
     ImageView cartImg;
-    @BindView(R.id.cart_badge)
-    NotificationBadge cartBadge;
+//    @BindView(R.id.cart_badge)
     @BindView(R.id.rel_toolbar)
     LinearLayout relToolbar;
     private SharedPreferences preferences;
 
     int mCartItemCount;
 
+    public TextView cartBadge;
+
     private Realm realm;
 //    @BindView(R.id.imageSlider_flip)
 //    ViewFlipper imageSliderFlip;
 
+    private static final String TAG = "HomeActivity";
+
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+
         Realm.init(this);
         realm = Realm.getDefaultInstance();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        cartBadge = findViewById(R.id.cart_badge);
 
         preferences = getSharedPreferences("user", MODE_PRIVATE);
         String name1 = preferences.getString("name", "");
         String email = preferences.getString("email", "");
+        String id = preferences.getString("id", "");
+
+//        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
-        ImageView img_profile = header.findViewById(R.id.img_profile);
         TextView name = header.findViewById(R.id.header_name);
         TextView mail = header.findViewById(R.id.textView);
 
         name.setText(name1);
         mail.setText(email);
 
-        img_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ProfileFragment profileFragment = new ProfileFragment();
-                displaySelectedFragment(profileFragment);
-            }
-        });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -99,32 +96,16 @@ public class HomeActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        HomeFragment homeFragment = new HomeFragment();
-        displaySelectedFragment(homeFragment);
-
 
         RealmResults<ProductsModel> all = realm.where(ProductsModel.class).findAll();
-        cartBadge.setNumber(all.size());
+        cartBadge.setText(String.valueOf(all.size()));
 
-//        deleteImg.setVisibility(View.GONE);
-//        deleteImg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                final RealmResults<ProductsModel> all = realm.where(ProductsModel.class).findAll();
-//                realm.executeTransaction(new Realm.Transaction() {
-//                    @Override
-//                    public void execute(Realm realm) {
-//                        all.deleteAllFromRealm();
-//                        SelectedItemFragment selectedItemFragment = new SelectedItemFragment();
-//                        displaySelectedFragmentWithBack(selectedItemFragment);
-//                        deleteImg.setVisibility(View.GONE);
-////                        finish();
-//                    }
-//                });
-//            }
-//        });
+        Log.i(TAG, "onCreateSize: " + all.size());
+
+
+        HomeFragment homeFragment = new HomeFragment();
+        displaySelectedFragment(homeFragment);
     }
-
 
     @Override
     public void onBackPressed() {
@@ -132,6 +113,7 @@ public class HomeActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.END)) {
             drawer.closeDrawer(GravityCompat.END);
         } else {
+//            alartExit();
             super.onBackPressed();
         }
     }
@@ -144,7 +126,7 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
 
-            HomeFragment homeFragment = new HomeFragment();
+            ProfileFragment homeFragment = new ProfileFragment();
             displaySelectedFragment(homeFragment);
             // Handle the camera action
         } else if (id == R.id.nav_favorite) {
@@ -152,22 +134,7 @@ public class HomeActivity extends AppCompatActivity
             FavoritesFragment favoritesFragment = new FavoritesFragment();
             displaySelectedFragmentWithBack(favoritesFragment);
 
-        } else if (id == R.id.nav_categories) {
-
-            CategoriesFragment categoriesFragment = new CategoriesFragment();
-            displaySelectedFragmentWithBack(categoriesFragment);
-
-        } else if (id == R.id.nav_star) {
-
-            TopRatedFragment topRatedFragment = new TopRatedFragment();
-            displaySelectedFragmentWithBack(topRatedFragment);
-
-        } else if (id == R.id.nav_most_sales) {
-
-            MostSalesFragment mostSalesFragment = new MostSalesFragment();
-            displaySelectedFragmentWithBack(mostSalesFragment);
-
-        } else if (id == R.id.nav_about_us) {
+        }  else if (id == R.id.nav_about_us) {
 
             AboutUsFragment aboutUsFragment = new AboutUsFragment();
             displaySelectedFragmentWithBack(aboutUsFragment);
@@ -177,8 +144,20 @@ public class HomeActivity extends AppCompatActivity
             HistoryFragment historyFragment = new HistoryFragment();
             displaySelectedFragmentWithBack(historyFragment);
 
-        }
+        }else if (id == R.id.nav_logout) {
 
+            SharedPreferences.Editor editor = getSharedPreferences("user", MODE_PRIVATE).edit();
+
+            preferences = getSharedPreferences("user", MODE_PRIVATE);
+
+            editor.putBoolean("login", false);
+
+            editor.apply();
+            startActivity(new Intent(HomeActivity.this, MainActivity.class));
+            finish();
+
+//            alartExit();
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -198,9 +177,12 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void emptyCart() {
-        cartBadge.setText("0");
+//        cartBadge.setText("0");
         CartFragment cartFragment = new CartFragment();
-        displaySelectedFragmentWithBack(cartFragment);
+//        displaySelectedFragmentWithBack(cartFragment);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.frame, cartFragment);
+        fragmentTransaction.addToBackStack(null).commit();
     }
 
     public void displaySelectedFragment(Fragment fragment) {
@@ -215,10 +197,25 @@ public class HomeActivity extends AppCompatActivity
         fragmentTransaction.addToBackStack(null).commit();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        RealmResults<ProductsModel> all = realm.where(ProductsModel.class).findAll();
-        cartBadge.setNumber(all.size());
+    public void alartExit() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to exit ?").setCancelable(false).setPositiveButton("yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+
+                Intent a = new Intent(Intent.ACTION_MAIN);
+                a.addCategory(Intent.CATEGORY_HOME);
+                a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(a);
+
+                //Main2Activity.this.finish();
+            }
+        }).setNegativeButton("no", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
     }
+
 }

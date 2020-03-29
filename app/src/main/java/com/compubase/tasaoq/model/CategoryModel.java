@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CategoryModel {
+public class CategoryModel implements Parcelable{
 
     @SerializedName("id")
     @Expose
@@ -51,6 +51,47 @@ public class CategoryModel {
     @SerializedName("datee")
     @Expose
     private String datee;
+
+    protected CategoryModel(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            idAdmin = null;
+        } else {
+            idAdmin = in.readInt();
+        }
+        title = in.readString();
+        des = in.readString();
+        price = in.readString();
+        priceDiscount = in.readString();
+        category = in.readString();
+        numberRate = in.readString();
+        numberStar = in.readString();
+        rate = in.readString();
+        img1 = in.readString();
+        img2 = in.readString();
+        img3 = in.readString();
+        datee = in.readString();
+    }
+
+    public static final Creator<CategoryModel> CREATOR = new Creator<CategoryModel>() {
+        @Override
+        public CategoryModel createFromParcel(Parcel in) {
+            return new CategoryModel(in);
+        }
+
+        @Override
+        public CategoryModel[] newArray(int size) {
+            return new CategoryModel[size];
+        }
+    };
+
+    public CategoryModel() {
+
+    }
 
     public Integer getId() {
         return id;
@@ -162,5 +203,38 @@ public class CategoryModel {
 
     public void setDatee(String datee) {
         this.datee = datee;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(id);
+        }
+        if (idAdmin == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(idAdmin);
+        }
+        dest.writeString(title);
+        dest.writeString(des);
+        dest.writeString(price);
+        dest.writeString(priceDiscount);
+        dest.writeString(category);
+        dest.writeString(numberRate);
+        dest.writeString(numberStar);
+        dest.writeString(rate);
+        dest.writeString(img1);
+        dest.writeString(img2);
+        dest.writeString(img3);
+        dest.writeString(datee);
     }
 }

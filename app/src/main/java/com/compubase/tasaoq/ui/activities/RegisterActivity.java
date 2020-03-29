@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +17,6 @@ import android.widget.Toast;
 import com.compubase.tasaoq.R;
 import com.compubase.tasaoq.data.API;
 import com.compubase.tasaoq.helper.RetrofitClient;
-import com.compubase.tasaoq.model.LoginModel;
 import com.compubase.tasaoq.model.RegisterModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,7 +28,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,7 +36,7 @@ import retrofit2.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity {
 
-//    @BindView(R.id.img_register)
+    //    @BindView(R.id.img_register)
 //    CircleImageView imgRegister;
     @BindView(R.id.input_username)
     EditText inputUsername;
@@ -49,10 +48,15 @@ public class RegisterActivity extends AppCompatActivity {
     EditText inputPassword;
     @BindView(R.id.btn_register)
     Button btnRegister;
-    private String m_Text,username,email,phone,pass;
-    private String name,mail,phonenumber,img;
+    @BindView(R.id.input_con_password)
+    EditText inputConPassword;
+    @BindView(R.id.btn_register_face)
+    Button btnRegisterFace;
+    private String m_Text, username, email, phone, pass;
+    private String name, mail, phonenumber, img;
     private int id;
     private SharedPreferences preferences;
+    private String s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,18 +80,24 @@ public class RegisterActivity extends AppCompatActivity {
         email = inputMail.getText().toString();
         phone = inputMobileNumber.getText().toString();
         pass = inputPassword.getText().toString();
+        s = inputConPassword.getText().toString();
 
-        if (TextUtils.isEmpty(username)){
+        if (TextUtils.isEmpty(username)) {
             inputUsername.setError("اسم المستخدم مطلوب");
-        }else if (TextUtils.isEmpty(email)){
+        } else if (TextUtils.isEmpty(email)) {
             inputMail.setError("البريد الالكتروني مطلوب");
-        }else if (TextUtils.isEmpty(phone)){
+        } else if (TextUtils.isEmpty(phone)) {
             inputMobileNumber.setError("رقم الهاتف مطلوب");
-        }else if (TextUtils.isEmpty(pass)){
+        } else if (TextUtils.isEmpty(pass)) {
             inputPassword.setError("كلمة المرور مطلوبه");
+        }else if (!TextUtils.equals(pass, s)){
+            inputConPassword.setError("كلمة المرور غير متطابقة");
         }else {
 
-            Call<ResponseBody> call2 = RetrofitClient.getInstant().create(API.class).register("1",username,email,pass,phone,"img");
+
+            Call<ResponseBody> call2 = RetrofitClient.getInstant()
+                    .create(API.class)
+                    .register("1", username, email, pass, phone, "img");
 
             call2.enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -99,8 +109,10 @@ public class RegisterActivity extends AppCompatActivity {
                     assert response.body() != null;
                     try {
 
-                        List<RegisterModel> registerModels = Arrays.asList(gson.fromJson(response.body().string(), RegisterModel[].class));
-                        if (response.isSuccessful()) {
+
+                        if (response.isSuccessful()){
+                            List<RegisterModel> registerModels =
+                                    Arrays.asList(gson.fromJson(response.body().string(),RegisterModel[].class));
 
                             name = registerModels.get(0).getName();
                             mail = registerModels.get(0).getEmail();
@@ -110,52 +122,26 @@ public class RegisterActivity extends AppCompatActivity {
 
                             sharedLogin();
 
-                            startActivity(new Intent(RegisterActivity.this,HomeActivity.class));
-                            finish();
-
-//                            Toast.makeText(LoginActivity.this, fb, Toast.LENGTH_SHORT).show();
+                            sendMail();
+                            openDialog();
 
                         }
 
                     } catch (Exception e) {
-                        Toast.makeText(RegisterActivity.this, "Wrong Email or Pass", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "البريد الالكتروني موجود مسبقا", Toast.LENGTH_SHORT).show();
+
                     }
 
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(RegisterActivity.this, "خطأ في كلمة المرور او البريد الالكتروني موجود مسبقا", Toast.LENGTH_SHORT).show();
+
                 }
             });
-
-//            Retrofit retrofit = RetrofitClient.getInstant();
-//            API api = retrofit.create(API.class);
-//            Call<ResponseBody> responseBodyCall = api.register("1", username, email, pass, phone, "img");
-//            responseBodyCall.enqueue(new Callback<ResponseBody>() {
-//                @Override
-//                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//
-//                    try {
-//                        assert response.body() != null;
-//                        String string = response.body().string();
-//
-//                        if (string.equals("True")){
-//
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                    Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            });
         }
-
-
     }
 
     private void sendMail() {
@@ -171,7 +157,6 @@ public class RegisterActivity extends AppCompatActivity {
                     if (string.equals("True")) {
 
                         enterCode();
-                        openDialog();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -188,23 +173,29 @@ public class RegisterActivity extends AppCompatActivity {
     private void enterCode() {
         Retrofit retrofit = RetrofitClient.getInstant();
         API api = retrofit.create(API.class);
-        Call<ResponseBody> responseBodyCall = api.EnterCode(m_Text);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        Call<String> responseBodyCall = api.EnterCode(m_Text);
+        responseBodyCall.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String string = response.body().string();
-                    if (string.equals("True")) {
+            public void onResponse(Call<String> call, Response<String> response) {
 
-                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                if (response.isSuccessful()){
+                    assert response.body() != null;
+                    String body = response.body();
+
+                    Log.i( "onResponse",body);
+
+                    if (body.equals("True")){
+
+                        startActivity(new Intent(RegisterActivity.this, HomeActivity.class));
+
+                        finish();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -237,6 +228,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         builder.show();
     }
+
     private void sharedLogin() {
         SharedPreferences.Editor editor = getSharedPreferences("user", MODE_PRIVATE).edit();
 
@@ -250,6 +242,7 @@ public class RegisterActivity extends AppCompatActivity {
         editor.putString("phone", phonenumber);
         editor.putString("image", img);
         editor.putString("password", pass);
+        editor.putString("con_pass", s);
 
         editor.apply();
     }

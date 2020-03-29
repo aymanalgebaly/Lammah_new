@@ -54,7 +54,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,8 +74,6 @@ public class CartFragment extends Fragment {
     ProgressBar progressBar;
     @BindView(R.id.rel_prog)
     RelativeLayout relProg;
-    @BindView(R.id.ed_address)
-    EditText edAddress;
 
     private int totalPricee = 0;
     private SharedPreferences preferences;
@@ -156,10 +153,8 @@ public class CartFragment extends Fragment {
                 totalPriceCart.setText(String.valueOf(totalPricee));
             }
         }
-//        realm.commitTransaction();
-        cartAdapter = new CartAdapter(productsModelList,totalPriceCart);
-//        double totalPrice = cartAdapter.getTotalPrice();
-//        totalPriceCart.setText(String.valueOf(totalPrice));
+
+        cartAdapter = new CartAdapter(productsModelList, totalPriceCart);
         rcvCart.setAdapter(cartAdapter);
         cartAdapter.notifyDataSetChanged();
 
@@ -176,24 +171,27 @@ public class CartFragment extends Fragment {
         relProg.setVisibility(View.VISIBLE);
 //        Payment();
 //        functionVolly();
+
+        double totalPrice = cartAdapter.getTotalPrice();
+
         HomeActivity homeActivity = (HomeActivity) getActivity();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("data",productsModelList);
-        bundle.putInt("price",totalPricee);
+        bundle.putDouble("price", totalPrice);
+
         ConfirmFragment confirmFragment = new ConfirmFragment();
         confirmFragment.setArguments(bundle);
         Objects.requireNonNull(homeActivity).displaySelectedFragmentWithBack(confirmFragment);
         relProg.setVisibility(View.GONE);
-//        functionVolly();
     }
+
     private void Payment() {
 
         Intent in = new Intent(getActivity(), PayTabActivity.class);
         in.putExtra(PaymentParams.MERCHANT_EMAIL, "sportive2050@gmail.com"); //this a demo account for testing the sdk
-        in.putExtra(PaymentParams.SECRET_KEY,"t5eeZqLRUSZ2lTCzYhruLiKShpuKFwb9CqnCR9tL2tOomrXlIoPuHznYZSIEoUO1kcDbl7XoBMMXdKjW98qQHNPGGxl5s96MmJYH");//Add your Secret Key Here
-        in.putExtra(PaymentParams.LANGUAGE,PaymentParams.ENGLISH);
+        in.putExtra(PaymentParams.SECRET_KEY, "t5eeZqLRUSZ2lTCzYhruLiKShpuKFwb9CqnCR9tL2tOomrXlIoPuHznYZSIEoUO1kcDbl7XoBMMXdKjW98qQHNPGGxl5s96MmJYH");//Add your Secret Key Here
+        in.putExtra(PaymentParams.LANGUAGE, PaymentParams.ENGLISH);
         in.putExtra(PaymentParams.TRANSACTION_TITLE, "Payment");
-        in.putExtra(PaymentParams.AMOUNT,5.0);
+        in.putExtra(PaymentParams.AMOUNT, 5.0);
 
         in.putExtra(PaymentParams.CURRENCY_CODE, "SAR");
         in.putExtra(PaymentParams.CUSTOMER_PHONE_NUMBER, "00966515435133");
@@ -225,64 +223,6 @@ public class CartFragment extends Fragment {
 
     }
 
-
-    private void functionVolly() {
-
-//            String idUser = ""; // Shof B2a Btgebo Mnen
-        String address = edAddress.getText().toString(); // Shof B2a Btgebo Mnen
-//            String totalPrice = ""; // Shof B2a Btgebo Mnen
-
-
-        StringBuilder GET_JSON_DATA_HTTP_URL =
-                new StringBuilder("http://fastini.alosboiya.com.sa/store_app.asmx/insert_orders?id_user=" +
-                id + "&address=" + address + "&totle_price=" + totalPricee);
-
-//        String sample = "http://fastini.alosboiya.com.sa/store_app.asmx/insert_orders?" +
-//                "id_user=" + id + "&address=" + address + "&totle_price=" + totalPrice +
-//                "&id_product=" + iid + "&id_product=" + iid + "&id_product=" + iid;
-
-
-        for (int i = 0; i <= productsModelList.size() - 1; i++) {
-            GET_JSON_DATA_HTTP_URL.append("&id_product=").append(String.valueOf(productsModelList.get(i).getId()));
-        }
-
-        Toast.makeText(getActivity(), GET_JSON_DATA_HTTP_URL, Toast.LENGTH_SHORT).show();
-
-        Log.i("functionVolly", GET_JSON_DATA_HTTP_URL.toString());
-//        Log.i("functionVolly", sample);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, GET_JSON_DATA_HTTP_URL.toString(),
-
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-//                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
-                        if (response.equals("True")) {
-                            HomeActivity homeActivity = (HomeActivity) getActivity();
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelableArrayList("data",productsModelList);
-                            ConfirmFragment confirmFragment = new ConfirmFragment();
-                            confirmFragment.setArguments(bundle);
-                            Objects.requireNonNull(homeActivity).displaySelectedFragmentWithBack(confirmFragment);
-                        }
-
-                    }
-                }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-
-                Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-
-        });
-
-        RequestHandler.getInstance(getActivity()).addToRequestQueue(stringRequest);
-
-
-    }
 
     private void confirmOrder() {
 
@@ -324,18 +264,6 @@ public class CartFragment extends Fragment {
             }
         });
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == PaymentParams.PAYMENT_REQUEST_CODE) {
-            Log.e("Tag", data.getStringExtra(PaymentParams.RESPONSE_CODE));
-            Log.e("Tag", data.getStringExtra(PaymentParams.TRANSACTION_ID));
-            if (data.hasExtra(PaymentParams.TOKEN) && !data.getStringExtra(PaymentParams.TOKEN).isEmpty()) {
-                Log.e("Tag", data.getStringExtra(PaymentParams.TOKEN));
-                Log.e("Tag", data.getStringExtra(PaymentParams.CUSTOMER_EMAIL));
-                Log.e("Tag", data.getStringExtra(PaymentParams.CUSTOMER_PASSWORD));
-            }
-        }
-    }
+
 
 }

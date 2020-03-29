@@ -4,60 +4,49 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.compubase.tasaoq.R;
-import com.compubase.tasaoq.helper.TinyDB;
 import com.compubase.tasaoq.model.ProductsModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-//import io.realm.Realm;
-//import io.realm.RealmResults;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolderCart> {
 
+    private TextView tvTotall;
     private Context context;
     private Realm realm;
-    private int j = 1;
-    private String price;
-    private int i1;
-    private int _stringVall;
-    private int i2;
-    private int _stringVal;
-    private int i3;
-    private int integer;
-    private TextView totall;
-    private int i4;
-    private Integer price_frag;
-    private String priceeeee;
-
-
-    public CartAdapter(Context context) {
-        this.context = context;
-    }
-
     private List<ProductsModel> productsModels;
+    private List<Double> totalPriceList = new ArrayList<>();
+
 
     public CartAdapter(List<ProductsModel> productsModelList, TextView totalPriceCart) {
-        this.totall = totalPriceCart;
+        this.tvTotall = totalPriceCart;
         this.productsModels = productsModelList;
+
+        if (productsModelList.size() > 0)
+            for (int i = 0; i < productsModels.size(); i++) {
+                totalPriceList.add(Double.parseDouble(String.valueOf(productsModels.get(i).getPrice())));
+            }
+
+
     }
 
     public CartAdapter(List<ProductsModel> productsModelList) {
         productsModels = productsModelList;
     }
+
 
     @NonNull
     @Override
@@ -71,92 +60,62 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolderCart
     @Override
     public void onBindViewHolder(@NonNull final ViewHolderCart viewHolderCart, @SuppressLint("RecyclerView") final int i) {
         final ProductsModel productsModel = productsModels.get(i);
-
+        viewHolderCart.title.setText(productsModel.getTitle());
+        viewHolderCart.desc.setText(productsModel.getDes());
+        viewHolderCart.price.setText(productsModel.getPrice());
+        viewHolderCart.total_price.setText(productsModel.getPrice());
         Glide.with(context).load(productsModel.getImg1()).placeholder(R.drawable.fastakni_logo).into(viewHolderCart.img);
-
-        String s = totall.getText().toString();
-        price_frag = Integer.valueOf(s);
-
-        Log.i( "soooooooo",s);
-
-        priceeeee = productsModel.getPrice();
-//        totall.setText(price);
-
-        Log.i("onBindViewHolder", String.valueOf(productsModel.getId()));
 
         viewHolderCart.btn_min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Log.d("src", "Increasing value...");
-                j = j + 1;
-                Log.i("onClick", String.valueOf(j));
-                _stringVall = j;
-                viewHolderCart.countity.setText(String.valueOf(_stringVall));
+                int quntity = Integer.parseInt((String) viewHolderCart.quntity.getText());
+                double total_price = Double.parseDouble((String) viewHolderCart.total_price.getText());
 
-                String price = productsModel.getPrice();
-                Integer integer = Integer.valueOf(price);
-                i2 = _stringVall * integer;
+                double price = total_price / quntity;
+
+                if (quntity >= 2) {
+                    quntity -= 1;
+
+                    total_price = quntity * price;
+
+                    totalPriceList.set(i, total_price);
+
+                    double allTotalPrice = getTotalPrice();
+                    tvTotall.setText(String.valueOf(allTotalPrice));
 
 
-                viewHolderCart.total_price.setText(String.valueOf(i2));
-
-
-//                productsModel.setPrice(viewHolderCart.total_price.getText().toString());
-//                productsModels.set(i, productsModel);
-//                totall.setText(String.valueOf(getTotalPrice()));
+                    viewHolderCart.quntity.setText(String.valueOf(quntity));
+                    viewHolderCart.total_price.setText(String.valueOf(total_price));
+                }
 
 
             }
         });
+
 
         viewHolderCart.btn_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Log.d("src", "Decreasing value...");
-                if (j > 1) {
-                    j = j - 1;
-                    _stringVal = j;
+                int quntity = Integer.parseInt((String) viewHolderCart.quntity.getText());
 
-                    if (!(_stringVal == 1)) {
-                        String price = productsModel.getPrice();
-                        CartAdapter.this.integer = i2;
-                        i3 = CartAdapter.this.integer - Integer.valueOf(price);
-                        viewHolderCart.total_price.setText(String.valueOf(i3));
+                quntity += 1;
 
-//                        productsModel.setPrice(viewHolderCart.total_price.getText().toString());
-//                        productsModels.set(i, productsModel);
-//                        totall.setText(String.valueOf(getTotalPrice()));
+                double price = quntity * Double.parseDouble(productsModel.getPrice());
 
+                totalPriceList.set(i, price);
 
-                    } else {
-                        String price = productsModel.getPrice();
-                        Integer int_price = Integer.valueOf(price);
-                        int i6 = int_price / _stringVal;
-                        int i5 = i6;
-                        viewHolderCart.total_price.setText(String.valueOf(i6));
-//                        String price1 = productsModel.getPrice();
-//                        Integer integer = Integer.valueOf(price1);
-//                        int i5 = i3 - price_frag;
-//                        productsModel.setPrice(String.valueOf(viewHolderCart.price.getText().toString()));
-//                        productsModels.set(i, productsModel);
-//                        totall.setText(String.valueOf(getTotalPrice()));
+                double totalPrice = getTotalPrice();
 
-//                        viewHolderCart.total_price.setText(String.valueOf(getTotalPrice()));
+                tvTotall.setText(String.valueOf(totalPrice));
 
-                    }
-
-                    viewHolderCart.countity.setText(String.valueOf(_stringVal));
-
-                } else {
-                    Toast.makeText(context, "Value can't be less than 1", Toast.LENGTH_SHORT).show();
-                    Log.d("src", "Value can't be less than 1");
-                }
-
+                viewHolderCart.quntity.setText(String.valueOf(quntity));
+                viewHolderCart.total_price.setText(String.valueOf(price));
             }
-
         });
+
 
         viewHolderCart.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,10 +133,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolderCart
             }
         });
 
-        viewHolderCart.title.setText(productsModel.getTitle());
-        viewHolderCart.desc.setText(productsModel.getDes());
-        viewHolderCart.price.setText(productsModel.getPrice());
-        viewHolderCart.total_price.setText(productsModel.getPrice());
 
     }
 
@@ -189,7 +144,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolderCart
     public class ViewHolderCart extends RecyclerView.ViewHolder {
         ImageView img;
         Button btn_min, btn_plus, btn_delete;
-        TextView title, desc, price, total_price, countity;
+        TextView title, desc, price, total_price, quntity;
 
         public ViewHolderCart(@NonNull View itemView) {
             super(itemView);
@@ -200,10 +155,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolderCart
             price = itemView.findViewById(R.id.txt_price_value);
             total_price = itemView.findViewById(R.id.txt_total_price_value);
             btn_delete = itemView.findViewById(R.id.btn_delete);
-            countity = itemView.findViewById(R.id.txt_num_value);
+            quntity = itemView.findViewById(R.id.txt_num_value);
 
-            btn_min = itemView.findViewById(R.id.btn_min);
-            btn_plus = itemView.findViewById(R.id.btn_plus);
+            btn_plus = itemView.findViewById(R.id.btn_min);
+            btn_min = itemView.findViewById(R.id.btn_plus);
 
         }
     }
@@ -211,9 +166,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolderCart
     public double getTotalPrice() {
         double total = 0;
 
-        for (int i = 0; i < productsModels.size(); i++) {
+        for (int i = 0; i < totalPriceList.size(); i++) {
 
-            total = total + Double.parseDouble(productsModels.get(i).getPrice());
+            total = total + totalPriceList.get(i);
         }
         return total;
     }

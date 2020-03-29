@@ -3,48 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     tools:context=".ui.fragments.CartFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.RecyclerView
 
+        android:id="@+id/rcv_cart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
         android:layout_above="@id/ed_address"
-        android:id="@+id/rcv_cart">
+        android:layout_marginTop="40dp">
 
     </android.support.v7.widget.RecyclerView>
 
     <RelativeLayout
+        android:id="@+id/rel_prog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:id="@+id/rel_prog">
+        android:visibility="gone">
 
         <ProgressBar
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progress_bar"
             android:layout_centerInParent="true" />
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/lin_cart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lin_cart"
-        android:gravity="bottom"
-        android:weightSum="5"
-        android:layout_marginTop="10dp"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:layout_marginTop="10dp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:weightSum="5">
 
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="3.5"
-            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="3.5"
             android:orientation="horizontal">
 
             <TextView
@@ -52,40 +55,32 @@
                 android:layout_height="wrap_content"
                 android:text="السعر الاجمالي :"
                 android:textColor="@color/green"
-                android:textStyle="bold"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/total_price_cart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="@color/green"
-                android:id="@+id/total_price_cart"/>
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
+
         <Button
+            android:id="@+id/btn_confirm"
             android:layout_width="0dp"
-            android:layout_weight="1.5"
             android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:layout_margin="5dp"
+            android:layout_weight="1.5"
             android:background="@color/green"
             android:text="تأكيد"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:id="@+id/btn_confirm"
             android:textColor="@color/white"
-            android:layout_gravity="end"
-            android:layout_margin="5dp"/>
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:id="@+id/ed_address"
-        android:hint="ادخل عنوانك"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:layout_above="@id/lin_cart"/>
 
 </RelativeLayout>

@@ -25,7 +25,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,8 +36,6 @@ import retrofit2.Response;
 public class ProfileFragment extends Fragment {
 
 
-    @BindView(R.id.img_register)
-    CircleImageView imgRegister;
     @BindView(R.id.input_username)
     EditText inputUsername;
     @BindView(R.id.input_mail)
@@ -48,10 +45,15 @@ public class ProfileFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.btn_save)
     Button btnSave;
+    @BindView(R.id.input_pass)
+    EditText inputPass;
+    @BindView(R.id.input_con_password)
+    EditText inputConPassword;
 
     private SharedPreferences preferences;
     private String phone, name, email, id;
     private String pass;
+    private String con_pass;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -71,10 +73,12 @@ public class ProfileFragment extends Fragment {
         phone = preferences.getString("phone", "");
         id = preferences.getString("id", "");
         pass = preferences.getString("password", "");
+        con_pass = preferences.getString("con_pass", "");
 
         inputUsername.setText(name);
         inputMail.setText(email);
         inputMobileNumber.setText(phone);
+        inputPass.setText(pass);
 
         return view;
     }
@@ -88,6 +92,7 @@ public class ProfileFragment extends Fragment {
                         assert response.body() != null;
                         String string = response.body().string();
                         if (string.equals("True")) {
+
                             Toast.makeText(getActivity(), "Profile updated", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getActivity(), HomeActivity.class));
                         }
@@ -99,7 +104,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -116,13 +121,13 @@ public class ProfileFragment extends Fragment {
         inputUsername.setText(name);
         inputMail.setText(email);
         inputMobileNumber.setText(phone);
+        inputPass.setText(pass);
+        inputConPassword.setText(con_pass);
     }
 
-    @OnClick({R.id.img_register, R.id.btn_save})
+    @OnClick({R.id.btn_save})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.img_register:
-                break;
             case R.id.btn_save:
                 updateData();
                 break;

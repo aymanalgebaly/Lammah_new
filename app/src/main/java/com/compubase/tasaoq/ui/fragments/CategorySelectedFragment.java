@@ -1,8 +1,11 @@
 package com.compubase.tasaoq.ui.fragments;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -56,6 +59,7 @@ public class CategorySelectedFragment extends Fragment {
     private TinyDB tinyDB;
     private String title;
     private String cat;
+    private String id;
 
     public CategorySelectedFragment() {
         // Required empty public constructor
@@ -69,6 +73,9 @@ public class CategorySelectedFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_category_selected, container, false);
         unbinder = ButterKnife.bind(this, view);
         tinyDB = new TinyDB(getActivity());
+
+        SharedPreferences preferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+        id = preferences.getString("id", "");
 
         int img = tinyDB.getInt("img");
         title = tinyDB.getString("title");
@@ -84,11 +91,11 @@ public class CategorySelectedFragment extends Fragment {
 
     private void setupRecycler() {
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(getActivity(),2);
         rcvCategorySelected.setLayoutManager(linearLayoutManager);
-        categorySelectedAdapter = new CategorySelectedAdapter(getActivity());
-        rcvCategorySelected.setAdapter(categorySelectedAdapter);
-        categorySelectedAdapter.notifyDataSetChanged();
+//        categorySelectedAdapter = new CategorySelectedAdapter(getActivity());
+//        rcvCategorySelected.setAdapter(categorySelectedAdapter);
+//        categorySelectedAdapter.notifyDataSetChanged();
 
     }
 
@@ -96,7 +103,7 @@ public class CategorySelectedFragment extends Fragment {
 
         productsModelArrayList.clear();
 
-        Call<ResponseBody> call2 = RetrofitClient.getInstant().create(API.class).showCategory("1",title);
+        Call<ResponseBody> call2 = RetrofitClient.getInstant().create(API.class).showCategory("1",title,id);
 
         call2.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -120,6 +127,7 @@ public class CategorySelectedFragment extends Fragment {
                             categoryModel.setCategory(categoryModels.get(j).getCategory());
                             categoryModel.setDes(categoryModels.get(j).getDes());
                             categoryModel.setImg1(categoryModels.get(j).getImg1());
+                            categoryModel.setId(categoryModels.get(j).getId());
 //                            categoryModel.setImg2(categoryModels.get(j).getImg2());
 //                            categoryModel.setImg3(categoryModels.get(j).getImg3());
                             categoryModel.setTitle(categoryModels.get(j).getTitle());

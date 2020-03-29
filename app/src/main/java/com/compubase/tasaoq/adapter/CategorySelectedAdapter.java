@@ -2,6 +2,7 @@ package com.compubase.tasaoq.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +63,7 @@ public class CategorySelectedAdapter extends RecyclerView.Adapter<CategorySelect
         viewHolder.txt_discount.setText(categoryModel.getPriceDiscount());
 //        viewHolder.offer_sale.setText(productsModel.getTxt_sale_offer());
         viewHolder.offer.setText(categoryModel.getPrice());
-        viewHolder.rate_num.setText(categoryModel.getNumberRate());
+        viewHolder.ratingBar.setRating(Float.parseFloat(categoryModel.getRate()));
         viewHolder.title.setText(categoryModel.getTitle());
 
 //        Glide.with(context).load(productsModel.getImg1()).placeholder(R.drawable.heart).into(viewHolder.heart);
@@ -77,19 +79,22 @@ public class CategorySelectedAdapter extends RecyclerView.Adapter<CategorySelect
 
                 HomeActivity homeActivity = (HomeActivity) context;
 
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("category",categoryModel);
                 SelectedItemFragment selectedItemFragment = new SelectedItemFragment();
+                selectedItemFragment.setArguments(bundle);
                 homeActivity.displaySelectedFragmentWithBack(selectedItemFragment);
 
-                TinyDB tinyDB = new TinyDB(context);
-                tinyDB.putString("pic",categoryModel.getImg1());
-                tinyDB.putString("pic1",categoryModel.getImg2());
-                tinyDB.putString("pic2",categoryModel.getImg3());
-                tinyDB.putString("name",categoryModel.getTitle());
-                tinyDB.putString("rate",categoryModel.getNumberRate());
-                tinyDB.putString("price",categoryModel.getPrice());
-                tinyDB.putString("des",categoryModel.getDes());
-                tinyDB.putString("dis",categoryModel.getPriceDiscount());
-                tinyDB.putString("cat", String.valueOf(categoryModel));
+//                TinyDB tinyDB = new TinyDB(context);
+//                tinyDB.putString("pic",categoryModel.getImg1());
+//                tinyDB.putString("pic1",categoryModel.getImg2());
+//                tinyDB.putString("pic2",categoryModel.getImg3());
+//                tinyDB.putString("name",categoryModel.getTitle());
+//                tinyDB.putString("rate",categoryModel.getNumberRate());
+//                tinyDB.putString("price",categoryModel.getPrice());
+//                tinyDB.putString("des",categoryModel.getDes());
+//                tinyDB.putString("dis",categoryModel.getPriceDiscount());
+//                tinyDB.putString("cat", String.valueOf(categoryModel));
             }
         });
         viewHolder.heart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -139,14 +144,15 @@ public class CategorySelectedAdapter extends RecyclerView.Adapter<CategorySelect
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title,rate_num,offer,offer_sale,txt_discount;
+        TextView title,offer,offer_sale,txt_discount;
         ImageView img_item;
         CheckBox heart;
+        RatingBar ratingBar;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             title = itemView.findViewById(R.id.txt_name_of_item);
-            rate_num = itemView.findViewById(R.id.txt_percent);
+            ratingBar = itemView.findViewById(R.id.rating_bar);
             offer = itemView.findViewById(R.id.txt_num);
             offer_sale = itemView.findViewById(R.id.txt_num_sale);
             txt_discount = itemView.findViewById(R.id.txt_percent_sale);

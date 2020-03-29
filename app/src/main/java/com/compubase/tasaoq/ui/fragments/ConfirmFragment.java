@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmResults;
+
+import static android.app.Activity.RESULT_OK;
 //import io.realm.Realm;
 //import io.realm.RealmResults;
 
@@ -71,7 +75,7 @@ public class ConfirmFragment extends Fragment {
     private List<ProductsModel> productsModelList = new ArrayList<>();
     private CartAdapter cartAdapter;
     private ArrayList<ProductsModel> data = new ArrayList<>();
-    private int price;
+    private double price;
     private SharedPreferences preferences;
     private String id;
 
@@ -91,14 +95,12 @@ public class ConfirmFragment extends Fragment {
         id = preferences.getString("id", "");
 
         if (getArguments() != null) {
-            data = getArguments().getParcelableArrayList("data");
-            price = getArguments().getInt("price");
+            price = getArguments().getDouble("price");
         }
 
         txtTotalValue.setText(String.valueOf(price));
         Realm.init(Objects.requireNonNull(getContext()));
         realm = Realm.getDefaultInstance();
-
 
 
         setupRecycler();
@@ -152,21 +154,42 @@ public class ConfirmFragment extends Fragment {
 
     @OnClick(R.id.btn_confirm)
     public void onViewClicked() {
+
         functionVolly();
 
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == PaymentParams.PAYMENT_REQUEST_CODE) {
+            Log.e("Tag", data.getStringExtra(PaymentParams.RESPONSE_CODE));
+            Log.e("Tag", data.getStringExtra(PaymentParams.TRANSACTION_ID));
+            if (data.hasExtra(PaymentParams.TOKEN) && !data.getStringExtra(PaymentParams.TOKEN).isEmpty()) {
+                Log.e("Tag", data.getStringExtra(PaymentParams.TOKEN));
+                Log.e("Tag", data.getStringExtra(PaymentParams.CUSTOMER_EMAIL));
+                Log.e("Tag", data.getStringExtra(PaymentParams.CUSTOMER_PASSWORD));
+
+                startActivity(new Intent(getContext(), HomeActivity.class));
+                Objects.requireNonNull(getActivity()).finish();
+            }
+        }
+    }
+
+
     private void Payment() {
 
         Intent in = new Intent(getActivity(), PayTabActivity.class);
-        in.putExtra(PaymentParams.MERCHANT_EMAIL, "sportive2050@gmail.com"); //this a demo account for testing the sdk
-        in.putExtra(PaymentParams.SECRET_KEY,"t5eeZqLRUSZ2lTCzYhruLiKShpuKFwb9CqnCR9tL2tOomrXlIoPuHznYZSIEoUO1kcDbl7XoBMMXdKjW98qQHNPGGxl5s96MmJYH");//Add your Secret Key Here
-        in.putExtra(PaymentParams.LANGUAGE,PaymentParams.ENGLISH);
+        in.putExtra(PaymentParams.MERCHANT_EMAIL, "Lammah.app.team@gmail.com"); //this a demo account for testing the sdk
+        in.putExtra(PaymentParams.SECRET_KEY, "2HmQMwfxdGt2CQtaJTdDhfkJxJItDKrFrOwekLMyrfB454ePYssgHNZfwIJ9saPTYl8j6URy9sDfxS4vkxL2kLhQt1ZVbOP99Ytg");//Add your Secret Key Here
+        in.putExtra(PaymentParams.LANGUAGE, PaymentParams.ENGLISH);
         in.putExtra(PaymentParams.TRANSACTION_TITLE, "Payment");
-        in.putExtra(PaymentParams.AMOUNT,Double.valueOf(price));
+        in.putExtra(PaymentParams.AMOUNT, Double.valueOf(price));
 
         in.putExtra(PaymentParams.CURRENCY_CODE, "SAR");
-        in.putExtra(PaymentParams.CUSTOMER_PHONE_NUMBER, "00966515435133");
-        in.putExtra(PaymentParams.CUSTOMER_EMAIL, "customer-email@example.com");
+        in.putExtra(PaymentParams.CUSTOMER_PHONE_NUMBER, "00201111828535");
+        in.putExtra(PaymentParams.CUSTOMER_EMAIL, "Lammah.app.team@gmail.com");
         in.putExtra(PaymentParams.ORDER_ID, "123456");
         in.putExtra(PaymentParams.PRODUCT_NAME, "Product 1, Product 2");
 
@@ -197,62 +220,64 @@ public class ConfirmFragment extends Fragment {
 
     private void functionVolly() {
 
-//            String idUser = ""; // Shof B2a Btgebo Mnen
         String address = edAddress.getText().toString(); // Shof B2a Btgebo Mnen
-//            String totalPrice = ""; // Shof B2a Btgebo Mnen
-
 
         StringBuilder GET_JSON_DATA_HTTP_URL =
                 new StringBuilder("http://fastini.alosboiya.com.sa/store_app.asmx/insert_orders?id_user=" +
                         id + "&address=" + address + "&totle_price=" + price);
-
-//        String sample = "http://fastini.alosboiya.com.sa/store_app.asmx/insert_orders?" +
-//                "id_user=" + id + "&address=" + address + "&totle_price=" + totalPrice +
-//                "&id_product=" + iid + "&id_product=" + iid + "&id_product=" + iid;
 
 
         for (int i = 0; i <= productsModelList.size() - 1; i++) {
             GET_JSON_DATA_HTTP_URL.append("&id_product=").append(String.valueOf(productsModelList.get(i).getId()));
         }
 
-//        Toast.makeText(getActivity(), GET_JSON_DATA_HTTP_URL, Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(edAddress.getText().toString())) {
+            edAddress.setError("ادخل عنوانك");
+            edAddress.requestFocus();
+        } else if (searchRadioBtn.isChecked() || advSearchRadioBtn.isChecked()) {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, GET_JSON_DATA_HTTP_URL.toString(),
 
-        Log.i("functionVolly", GET_JSON_DATA_HTTP_URL.toString());
-//        Log.i("functionVolly", sample);
+                    new com.android.volley.Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, GET_JSON_DATA_HTTP_URL.toString(),
+                            if (response.equals("True")) {
 
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
 
-//                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
-                        if (response.equals("True")) {
-                            if (searchRadioBtn.isChecked()){
-                                Toast.makeText(getContext(), "تم ارسال الطلب", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(getContext(),HomeActivity.class));
-                                Objects.requireNonNull(getActivity()).finish();
-                            }else if (advSearchRadioBtn.isChecked()){
-                                Payment();
-                            }else {
-                                Toast.makeText(getContext(), "من فضلك اختر طريقه الدفع", Toast.LENGTH_LONG).show();
+                                realm.executeTransaction(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(@NonNull Realm realm) {
+                                        RealmResults<ProductsModel> result = realm.where(ProductsModel.class).findAll();
+                                        result.deleteAllFromRealm();
+                                    }
+                                });
+
+
+                                if (advSearchRadioBtn.isChecked()) {
+                                    Payment();
+                                } else {
+                                    Toast.makeText(getContext(), "تم ارسال الطلب", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(getContext(), HomeActivity.class));
+                                    Objects.requireNonNull(getActivity()).finish();
+                                }
                             }
+
                         }
-
-                    }
-                }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                    }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
 
-                Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
-            }
+                }
 
-        });
+            });
 
-        RequestHandler.getInstance(getActivity()).addToRequestQueue(stringRequest);
+            RequestHandler.getInstance(getActivity()).addToRequestQueue(stringRequest);
 
+        } else
+            Toast.makeText(getContext(), "من فضلك اختر طريقه الدفع", Toast.LENGTH_LONG).show();
 
     }
 }

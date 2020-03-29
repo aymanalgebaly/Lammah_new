@@ -20,6 +20,7 @@ import com.compubase.tasaoq.R;
 import com.compubase.tasaoq.data.API;
 import com.compubase.tasaoq.helper.RetrofitClient;
 import com.compubase.tasaoq.helper.TinyDB;
+import com.compubase.tasaoq.model.CategoryModel;
 import com.compubase.tasaoq.model.ProductsModel;
 
 import java.io.IOException;
@@ -69,6 +70,7 @@ public class SelectedItemFragment extends Fragment {
     private SharedPreferences preferences;
     private String id_;
     private String id_pro_s;
+    private String titlee,price,numberRate,priceDiscount,img1,category1;
 
 
     public SelectedItemFragment() {
@@ -90,9 +92,9 @@ public class SelectedItemFragment extends Fragment {
         id_ = preferences.getString("id", "");
 
         tinyDB = new TinyDB(getActivity());
-        pic = tinyDB.getString("pic");
-        name = tinyDB.getString("name");
-        pricee = tinyDB.getString("price");
+        img1 = tinyDB.getString("pic");
+        titlee = tinyDB.getString("name");
+        price = tinyDB.getString("price");
         rate = tinyDB.getString("rate");
         des = tinyDB.getString("des");
         pic2 = tinyDB.getString("pic2");
@@ -100,14 +102,28 @@ public class SelectedItemFragment extends Fragment {
         dis = tinyDB.getString("dis");
         id_pro_s = tinyDB.getString("id_pro");
 
+        if (getArguments() != null){
+            CategoryModel category = getArguments().getParcelable("category");
+            assert category != null;
+            id_pro_s = String.valueOf(category.getId());
+            des = category.getDes();
+            price = category.getPrice();
+            numberRate = category.getNumberRate();
+            img1 = category.getImg1();
+            dis = category.getPriceDiscount();
+            titlee = category.getTitle();
+            category1 = category.getCategory();
+            rate = category.getRate();
+        }
+
 
         Log.i( "onCreateView",name + des + id_pro_s);
 
-        Glide.with(Objects.requireNonNull(getActivity())).load(pic).into(imgItemSelected);
+        Glide.with(Objects.requireNonNull(getActivity())).load(img1).into(imgItemSelected);
 
         txtPercent.setText(rate);
-        txtPrice.setText(pricee);
-        title.setText(name);
+        txtPrice.setText(price);
+        title.setText(titlee);
         txtDes.setText(des);
 
 
@@ -175,11 +191,11 @@ public class SelectedItemFragment extends Fragment {
             public void execute(Realm bgRealm) {
                 ProductsModel producstModel = bgRealm.createObject(ProductsModel.class);
 
-                producstModel.setTitle(name);
-                producstModel.setPrice(pricee);
+                producstModel.setTitle(titlee);
+                producstModel.setPrice(price);
                 producstModel.setPriceDiscount(dis);
                 producstModel.setDes(des);
-                producstModel.setImg1(pic);
+                producstModel.setImg1(img1);
                 producstModel.setNumberRate(rate);
                 producstModel.setId(Integer.valueOf(id_pro_s));
 
