@@ -12,9 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.compubase.tasaoq.R;
 import com.compubase.tasaoq.adapter.CategoriesAdapter;
@@ -24,6 +22,10 @@ import com.compubase.tasaoq.helper.RetrofitClient;
 import com.compubase.tasaoq.model.CategoriesModel;
 import com.compubase.tasaoq.model.ProductsModel;
 import com.compubase.tasaoq.ui.activities.HomeActivity;
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -48,33 +50,34 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment {
 
 
-    @BindView(R.id.imageSlider_flip)
-    ViewFlipper imageSliderFlip;
     @BindView(R.id.rcv_categories)
     RecyclerView rcvCategories;
     @BindView(R.id.rcv_top_rated)
     RecyclerView rcvTopRated;
     Unbinder unbinder;
+    @BindView(R.id.main_slider)
+    SliderLayout mainSlider;
 
-    private int [] images;
-    private List<CategoriesModel>categoriesModelList;
+    private int[] images;
+    private List<CategoriesModel> categoriesModelList;
     private CategoriesAdapter categoriesAdapter;
     private TopRatedAdapter topRatedAdapter;
     private ProductsModel productsModelsList;
     private ArrayList<ProductsModel> productsModelArrayList = new ArrayList<>();
+    private ArrayList<CategoriesModel> categoriesModelArrayList = new ArrayList<>();
     private SharedPreferences preferences;
     private String id;
     private Integer id_pro;
 
 
     private static final String TAG = "HomeFragment";
+    private String img;
+    private CategoriesModel categoriesModel;
 
 
     public HomeFragment() {
         // Required empty public constructor
     }
-
-
 
 
     @Override
@@ -88,14 +91,13 @@ public class HomeFragment extends Fragment {
         id = preferences.getString("id", "");
 
 //        Toast.makeText(getActivity(), id, Toast.LENGTH_SHORT).show();
-
-        images = new int[]{R.drawable.kago, R.drawable.loz, R.drawable.leb,R.drawable.amar_eldein
-        ,R.drawable.sodany,R.drawable.dwar_elshams,R.drawable.fozdo2};
-
-        for (int image : images) {
-
-            flipperImage(image);
-        }
+//
+//        images = new int[]{R.drawable.kago, R.drawable.loz, R.drawable.leb,R.drawable.amar_eldein
+//        ,R.drawable.sodany,R.drawable.dwar_elshams,R.drawable.fozdo2};
+//
+//        for (int image : images) {
+//
+//        }
 
 
         HomeActivity homeActivity = (HomeActivity) getActivity();
@@ -116,29 +118,112 @@ public class HomeFragment extends Fragment {
 
     public void fetchData() {
 
-        ArrayList<CategoriesModel> categoriesModels = new ArrayList<>();
+        categoriesModelArrayList.clear();
 
-        int[] image = new int[]{R.drawable.kago,R.drawable.loz,R.drawable.fozdo2,R.drawable.leb,
-        R.drawable.dwar_elshams,R.drawable.sodany,R.drawable.amar_eldein};
+        RetrofitClient.getInstant().create(API.class).selecte_all_category().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-        String[]title = new String[]{"كاجو","لوز","فزدق","لب","زيوت","سودانى","قمر الدين"};
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
 
-        for (int i = 0; i <image.length ; i++) {
+                try {
+                    assert response.body() != null;
+                    List<CategoriesModel> categoriesModels =
+                            Arrays.asList(gson.fromJson(response.body().string(), CategoriesModel[].class));
 
-            categoriesModels.add(new CategoriesModel(title[i],image[i]));
-        }
-        categoriesAdapter.setAdapter(categoriesModels);
-        categoriesAdapter.notifyDataSetChanged();
+                    if (response.isSuccessful()) {
+
+                        for (int i = 0; i < categoriesModels.size(); i++) {
+
+
+                            img = categoriesModels.get(i).getImg();
+
+                            Log.i("onResponse: ", img);
+
+                            List<String> imagsList = new ArrayList<>();
+                            imagsList.add(img);
+
+                            for (int o = 0; o < imagsList.size(); o++) {
+
+                                DefaultSliderView textSliderView = new DefaultSliderView(getActivity());
+                                textSliderView
+                                        .description("")
+                                        .image(imagsList.get(o))
+                                        .setScaleType(BaseSliderView.ScaleType.Fit);
+                                textSliderView.bundle(new Bundle());
+                                textSliderView.getBundle()
+                                        .putString("extra", "slider");
+                                if (null != mainSlider) {
+                                    mainSlider.addSlider(textSliderView);
+                                    mainSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+                                    mainSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+                                    mainSlider.setCustomAnimation(new DescriptionAnimation());
+                                    mainSlider.setDuration(6000);
+                                    mainSlider.moveNextPosition();
+                                    mainSlider.startAutoCycle();
+//                                    mainSlider.setCustomIndicator(indicators);
+
+                                }
+
+                            }
+
+//                            int imagee = Integer.parseInt(img);
+
+//                            flipperImage(imagee);
+
+                            categoriesModel = new CategoriesModel();
+
+                            categoriesModel.setName(categoriesModels.get(i).getName());
+                            categoriesModel.setImg(categoriesModels.get(i).getImg());
+                            categoriesModel.setId(categoriesModels.get(i).getId());
+                            categoriesModel.setDateregister(categoriesModels.get(i).getDateregister());
+
+                            categoriesModelArrayList.add(categoriesModel);
+
+                        }
+
+                        categoriesAdapter.setData(categoriesModelArrayList);
+                        rcvCategories.setAdapter(categoriesAdapter);
+                        categoriesAdapter.notifyDataSetChanged();
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+
+                Log.i("onFailure: ", t.getMessage());
+            }
+        });
+//        ArrayList<CategoriesModel> categoriesModels = new ArrayList<>();
+//
+//        int[] image = new int[]{R.drawable.kago,R.drawable.loz,R.drawable.fozdo2,R.drawable.leb,
+//        R.drawable.dwar_elshams,R.drawable.sodany,R.drawable.amar_eldein};
+//
+//        String[]title = new String[]{"كاجو","لوز","فزدق","لب","زيوت","سودانى","قمر الدين"};
+//
+//        for (int i = 0; i <image.length ; i++) {
+//
+//            categoriesModels.add(new CategoriesModel(title[i],image[i]));
+//        }
+//        categoriesAdapter.setAdapter(categoriesModels);
+//        categoriesAdapter.notifyDataSetChanged();
     }
 
     private void setupRecycler() {
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,
                 false);
         rcvCategories.setLayoutManager(linearLayoutManager);
         categoriesAdapter = new CategoriesAdapter(getActivity());
-        rcvCategories.setAdapter(categoriesAdapter);
-        categoriesAdapter.notifyDataSetChanged();
+//        rcvCategories.setAdapter(categoriesAdapter);
+//        categoriesAdapter.notifyDataSetChanged();
 
     }
 
@@ -146,7 +231,7 @@ public class HomeFragment extends Fragment {
 
         productsModelArrayList.clear();
 
-        Call<ResponseBody> call2 = RetrofitClient.getInstant().create(API.class).viewProducts("1",id);
+        Call<ResponseBody> call2 = RetrofitClient.getInstant().create(API.class).viewProducts("1", id);
 
         call2.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -159,9 +244,9 @@ public class HomeFragment extends Fragment {
                     assert response.body() != null;
                     List<ProductsModel> productsModels = Arrays.asList(gson.fromJson(response.body().string(), ProductsModel[].class));
 
-                    if (response.isSuccessful()){
+                    if (response.isSuccessful()) {
 
-                        for (int j = 0; j <productsModels.size() ; j++) {
+                        for (int j = 0; j < productsModels.size(); j++) {
 
                             productsModelsList = new ProductsModel();
 
@@ -195,32 +280,32 @@ public class HomeFragment extends Fragment {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
 
-                Log.i("onFailure: ",t.getMessage());
+                Log.i("onFailure: ", t.getMessage());
             }
         });
     }
 
     private void setupRecyclerTopRated() {
 
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(getActivity(),2);
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(getActivity(), 2);
         rcvTopRated.setLayoutManager(linearLayoutManager);
         topRatedAdapter = new TopRatedAdapter(getActivity());
         rcvTopRated.setAdapter(topRatedAdapter);
         topRatedAdapter.notifyDataSetChanged();
     }
 
-    private void flipperImage(int image) {
-
-        ImageView imageView = new ImageView(getActivity());
-        imageView.setBackgroundResource(image);
-
-        imageSliderFlip.addView(imageView);
-        imageSliderFlip.setFlipInterval(5000);
-        imageSliderFlip.setAutoStart(true);
-
-        imageSliderFlip.setInAnimation(getActivity(),android.R.anim.slide_in_left);
-        imageSliderFlip.setOutAnimation(getActivity(),android.R.anim.slide_out_right);
-    }
+//    private void flipperImage(int image) {
+//
+//        ImageView imageView = new ImageView(getActivity());
+//        imageView.setBackgroundResource(image);
+//
+//        imageSliderFlip.addView(imageView);
+//        imageSliderFlip.setFlipInterval(5000);
+//        imageSliderFlip.setAutoStart(true);
+//
+//        imageSliderFlip.setInAnimation(getActivity(),android.R.anim.slide_in_left);
+//        imageSliderFlip.setOutAnimation(getActivity(),android.R.anim.slide_out_right);
+//    }
 
     @Override
     public void onDestroyView() {

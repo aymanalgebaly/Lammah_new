@@ -41,7 +41,7 @@ public class CategoriesNavigationAdapter extends RecyclerView.Adapter<Categories
 
         CategoriesModel categoriesModel = categoriesModelList.get(i);
 
-        viewHolder.title.setText(categoriesModel.getTitle());
+        viewHolder.title.setText(categoriesModel.getName());
 
         Glide.with(context).load(categoriesModel.getImg()).placeholder(R.drawable.avengers).into(viewHolder.img);
     }

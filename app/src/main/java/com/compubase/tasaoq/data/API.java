@@ -6,6 +6,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface API {
@@ -96,4 +97,7 @@ public interface API {
     Call<ResponseBody>MyOrderDetails(
             @Field("id_order") String id_order
     );
+
+    @GET("selecte_all_category")
+    Call<ResponseBody>selecte_all_category();
 }

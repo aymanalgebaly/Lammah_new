@@ -6,8 +6,8 @@ android {
         applicationId "com.compubase.tasaoq"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5
-        versionName "1.4"
+        versionCode 6
+        versionName "1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'//convert from json to pojo
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    implementation 'com.squareup.picasso:picasso:2.71828'
+//    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation 'com.github.therealshabi:AutoImageFlipper:v1.4.1'
     implementation 'com.nex3z:notification-badge:1.0.2'
@@ -64,6 +64,10 @@ dependencies {
     implementation 'com.github.dbachelder:CreditCardEntry:1.4.9'
     implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
 
+    implementation "com.android.support:support-v4:+"
+    implementation 'com.squareup.picasso:picasso:2.3.2'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.daimajia.slider:library:1.1.5@aar'
 
 //    compile('com.twitter.sdk.android:twitter:3.3.0@aar') {
 //        transitive = true

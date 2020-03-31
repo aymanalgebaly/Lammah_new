@@ -14,14 +14,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.compubase.tasaoq.R;
@@ -69,6 +73,8 @@ public class ConfirmFragment extends Fragment {
     RadioButton advSearchRadioBtn;
     @BindView(R.id.lin_one)
     RadioGroup linOne;
+    @BindView(R.id.sp_city)
+    Spinner spCity;
 
     private Realm realm;
 
@@ -78,6 +84,7 @@ public class ConfirmFragment extends Fragment {
     private double price;
     private SharedPreferences preferences;
     private String id;
+    private String item;
 
     public ConfirmFragment() {
         // Required empty public constructor
@@ -101,6 +108,33 @@ public class ConfirmFragment extends Fragment {
         txtTotalValue.setText(String.valueOf(price));
         Realm.init(Objects.requireNonNull(getContext()));
         realm = Realm.getDefaultInstance();
+
+
+        List<String> governorate = new ArrayList<>();
+        governorate.add("اختر المدينة");
+        governorate.add("جده");
+        governorate.add("مكه");
+        governorate.add("محايل عسير");
+
+        ArrayAdapter<String> arrayAdapter;
+        arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item,governorate);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spCity.setAdapter(arrayAdapter);
+        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                item = governorate.get(position);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
 
         setupRecycler();
@@ -155,7 +189,14 @@ public class ConfirmFragment extends Fragment {
     @OnClick(R.id.btn_confirm)
     public void onViewClicked() {
 
-        functionVolly();
+        if (item.equals("0")) {
+
+            Toast.makeText(getActivity(), "اختر المدينة", Toast.LENGTH_SHORT).show();
+        }else {
+
+            functionVolly();
+
+        }
 
     }
 
@@ -222,9 +263,11 @@ public class ConfirmFragment extends Fragment {
 
         String address = edAddress.getText().toString(); // Shof B2a Btgebo Mnen
 
+        String fullAddress = item + " " + address;
+
         StringBuilder GET_JSON_DATA_HTTP_URL =
                 new StringBuilder("http://fastini.alosboiya.com.sa/store_app.asmx/insert_orders?id_user=" +
-                        id + "&address=" + address + "&totle_price=" + price);
+                        id + "&address=" + fullAddress + "&totle_price=" + price);
 
 
         for (int i = 0; i <= productsModelList.size() - 1; i++) {
@@ -237,7 +280,7 @@ public class ConfirmFragment extends Fragment {
         } else if (searchRadioBtn.isChecked() || advSearchRadioBtn.isChecked()) {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, GET_JSON_DATA_HTTP_URL.toString(),
 
-                    new com.android.volley.Response.Listener<String>() {
+                    new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
 
@@ -263,7 +306,7 @@ public class ConfirmFragment extends Fragment {
                             }
 
                         }
-                    }, new com.android.volley.Response.ErrorListener() {
+                    }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 

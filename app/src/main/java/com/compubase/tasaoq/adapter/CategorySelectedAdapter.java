@@ -61,9 +61,16 @@ public class CategorySelectedAdapter extends RecyclerView.Adapter<CategorySelect
         final  CategoryModel categoryModel = categoryModelList.get(i);
 
         viewHolder.txt_discount.setText(categoryModel.getPriceDiscount());
-//        viewHolder.offer_sale.setText(productsModel.getTxt_sale_offer());
+//        viewHolder.offer_sale.setText(categoryModel.getPrice());
         viewHolder.offer.setText(categoryModel.getPrice());
-        viewHolder.ratingBar.setRating(Float.parseFloat(categoryModel.getRate()));
+
+        if (categoryModel.getRate().equals("")){
+            viewHolder.ratingBar.setRating(0);
+        }else {
+
+            viewHolder.ratingBar.setRating(Float.parseFloat(categoryModel.getRate()));
+
+        }
         viewHolder.title.setText(categoryModel.getTitle());
 
 //        Glide.with(context).load(productsModel.getImg1()).placeholder(R.drawable.heart).into(viewHolder.heart);

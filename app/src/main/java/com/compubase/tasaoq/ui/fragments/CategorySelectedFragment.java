@@ -46,8 +46,8 @@ import retrofit2.Response;
 public class CategorySelectedFragment extends Fragment {
 
 
-    @BindView(R.id.rcv_category_selected)
-    RecyclerView rcvCategorySelected;
+//    @BindView(R.id.rcv_category_selected)
+//    RecyclerView rcvCategorySelected;
     Unbinder unbinder;
     @BindView(R.id.img_category)
     ImageView imgCategory;
@@ -60,6 +60,8 @@ public class CategorySelectedFragment extends Fragment {
     private String title;
     private String cat;
     private String id;
+
+    private RecyclerView rcvCategorySelected;
 
     public CategorySelectedFragment() {
         // Required empty public constructor
@@ -77,7 +79,9 @@ public class CategorySelectedFragment extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
         id = preferences.getString("id", "");
 
-        int img = tinyDB.getInt("img");
+        rcvCategorySelected = view.findViewById(R.id.rcv_category_selected);
+
+        String img = tinyDB.getString("img");
         title = tinyDB.getString("title");
 
         Glide.with(Objects.requireNonNull(getActivity())).load(img).into(imgCategory);
@@ -93,69 +97,72 @@ public class CategorySelectedFragment extends Fragment {
 
         GridLayoutManager linearLayoutManager = new GridLayoutManager(getActivity(),2);
         rcvCategorySelected.setLayoutManager(linearLayoutManager);
-//        categorySelectedAdapter = new CategorySelectedAdapter(getActivity());
-//        rcvCategorySelected.setAdapter(categorySelectedAdapter);
-//        categorySelectedAdapter.notifyDataSetChanged();
 
     }
 
     private void fetchDataTopRated() {
 
-        productsModelArrayList.clear();
+        if (!productsModelArrayList.isEmpty()){
 
-        Call<ResponseBody> call2 = RetrofitClient.getInstant().create(API.class).showCategory("1",title,id);
+            productsModelArrayList.clear();
 
-        call2.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+        }else {
 
-                GsonBuilder builder = new GsonBuilder();
-                Gson gson = builder.create();
+            Call<ResponseBody> call2 = RetrofitClient.getInstant().create(API.class).showCategory("1",title,id);
 
-                try {
-                    assert response.body() != null;
-                    List<CategoryModel> categoryModels = Arrays.asList(gson.fromJson(response.body().string(),
-                            CategoryModel[].class));
+            call2.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                    if (response.isSuccessful()) {
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson gson = builder.create();
 
-                        for (int j = 0; j < categoryModels.size(); j++) {
+                    try {
+                        assert response.body() != null;
+                        List<CategoryModel> categoryModels = Arrays.asList(gson.fromJson(response.body().string(),
+                                CategoryModel[].class));
 
-                            categoryModel = new CategoryModel();
+                        if (response.isSuccessful()) {
 
-                            categoryModel.setId(categoryModels.get(j).getIdAdmin());
-                            categoryModel.setCategory(categoryModels.get(j).getCategory());
-                            categoryModel.setDes(categoryModels.get(j).getDes());
-                            categoryModel.setImg1(categoryModels.get(j).getImg1());
-                            categoryModel.setId(categoryModels.get(j).getId());
+                            for (int j = 0; j < categoryModels.size(); j++) {
+
+                                categoryModel = new CategoryModel();
+
+                                categoryModel.setId(categoryModels.get(j).getIdAdmin());
+                                categoryModel.setCategory(categoryModels.get(j).getCategory());
+                                categoryModel.setDes(categoryModels.get(j).getDes());
+                                categoryModel.setImg1(categoryModels.get(j).getImg1());
+                                categoryModel.setId(categoryModels.get(j).getId());
 //                            categoryModel.setImg2(categoryModels.get(j).getImg2());
 //                            categoryModel.setImg3(categoryModels.get(j).getImg3());
-                            categoryModel.setTitle(categoryModels.get(j).getTitle());
-                            categoryModel.setNumberRate(categoryModels.get(j).getNumberRate());
-                            categoryModel.setPrice(categoryModels.get(j).getPrice());
-                            categoryModel.setPriceDiscount(categoryModels.get(j).getPriceDiscount());
-                            categoryModel.setRate(categoryModels.get(j).getRate());
+                                categoryModel.setTitle(categoryModels.get(j).getTitle());
+                                categoryModel.setNumberRate(categoryModels.get(j).getNumberRate());
+                                categoryModel.setPrice(categoryModels.get(j).getPrice());
+                                categoryModel.setPriceDiscount(categoryModels.get(j).getPriceDiscount());
+                                categoryModel.setRate(categoryModels.get(j).getRate());
 
-                            productsModelArrayList.add(categoryModel);
+                                productsModelArrayList.add(categoryModel);
+                            }
+                            categorySelectedAdapter = new CategorySelectedAdapter(productsModelArrayList);
+                            rcvCategorySelected.setAdapter(categorySelectedAdapter);
+                            categorySelectedAdapter.notifyDataSetChanged();
+
                         }
-                        categorySelectedAdapter = new CategorySelectedAdapter(productsModelArrayList);
-                        rcvCategorySelected.setAdapter(categorySelectedAdapter);
-                        categorySelectedAdapter.notifyDataSetChanged();
-
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.i("onFailure: ", t.getMessage());
+                }
+            });
+        }
 
-                Log.i("onFailure: ", t.getMessage());
-            }
-        });
 
     }
 

@@ -22,6 +22,7 @@ import com.compubase.tasaoq.helper.RetrofitClient;
 import com.compubase.tasaoq.helper.TinyDB;
 import com.compubase.tasaoq.model.CategoryModel;
 import com.compubase.tasaoq.model.ProductsModel;
+import com.compubase.tasaoq.ui.activities.HomeActivity;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -31,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -71,6 +73,7 @@ public class SelectedItemFragment extends Fragment {
     private String id_;
     private String id_pro_s;
     private String titlee,price,numberRate,priceDiscount,img1,category1;
+    private HomeActivity homeActivity;
 
 
     public SelectedItemFragment() {
@@ -84,6 +87,7 @@ public class SelectedItemFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_selected_item, container, false);
         unbinder = ButterKnife.bind(this, view);
+        homeActivity = (HomeActivity)getActivity();
 
         Realm.init(Objects.requireNonNull(getActivity()));
         realm = Realm.getDefaultInstance();
@@ -206,6 +210,9 @@ public class SelectedItemFragment extends Fragment {
                 // Transaction was a success.
 
                 Toast.makeText(getActivity(), "data inserted", Toast.LENGTH_SHORT).show();
+
+                RealmResults<ProductsModel> all = realm.where(ProductsModel.class).findAll();
+                homeActivity.cartBadge.setText(String.valueOf(all.size()));
             }
         }, new Realm.Transaction.OnError() {
             @Override

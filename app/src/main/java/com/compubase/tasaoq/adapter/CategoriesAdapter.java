@@ -25,9 +25,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     private Context context;
     private ArrayList<CategoriesModel> categoriesModelList;
 
-    public CategoriesAdapter(ArrayList<CategoriesModel> categoriesModelList) {
-        this.categoriesModelList = categoriesModelList;
-    }
 
     public CategoriesAdapter(Context context) {
         this.context = context;
@@ -46,7 +43,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
         final CategoriesModel categoriesModel = categoriesModelList.get(i);
 
-        viewHolder.title.setText(categoriesModel.getTitle());
+        viewHolder.title.setText(categoriesModel.getName());
 
         Glide.with(context).load(categoriesModel.getImg()).into(viewHolder.img);
 
@@ -56,8 +53,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
                 HomeActivity homeActivity = (HomeActivity) context;
 
                 TinyDB tinyDB = new TinyDB(context);
-                tinyDB.putString("title",categoriesModel.getTitle());
-                tinyDB.putInt("img",categoriesModel.getImg());
+                tinyDB.putString("title",categoriesModel.getName());
+                tinyDB.putString("img",categoriesModel.getImg());
                 tinyDB.putObject("categories",categoriesModel);
 
                 CategorySelectedFragment categorySelectedFragment = new CategorySelectedFragment();
@@ -74,6 +71,11 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     public void setAdapter(ArrayList<CategoriesModel> categoriesModels) {
         this.categoriesModelList = categoriesModels;
+    }
+
+    public void setData(ArrayList<CategoriesModel> categoriesModelArrayList) {
+
+        this.categoriesModelList = categoriesModelArrayList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

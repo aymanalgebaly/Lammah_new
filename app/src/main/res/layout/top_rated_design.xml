@@ -110,7 +110,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_centerVertical="true"
-                        android:text="123546"
+                        android:text=""
                         android:gravity="center_vertical"
                         android:id="@+id/txt_num_sale"
                         android:textColor="@color/gray"
