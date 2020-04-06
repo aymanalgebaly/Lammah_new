@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_forgot:
+                startActivity(new Intent(MainActivity.this, ForgotPasswordActivity.class));
                 break;
             case R.id.btn_login:
                 loginValidate();

@@ -98,6 +98,12 @@ public interface API {
             @Field("id_order") String id_order
     );
 
+    @FormUrlEncoded
+    @POST("forgete_password_by_email")
+    Call<ResponseBody>forgete_password_by_email(
+            @Field("email") String email
+    );
+
     @GET("selecte_all_category")
     Call<ResponseBody>selecte_all_category();
 }
