@@ -207,13 +207,25 @@ public class ConfirmFragment extends Fragment {
         if (resultCode == RESULT_OK && requestCode == PaymentParams.PAYMENT_REQUEST_CODE) {
             Log.e("Tag", data.getStringExtra(PaymentParams.RESPONSE_CODE));
             Log.e("Tag", data.getStringExtra(PaymentParams.TRANSACTION_ID));
+
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(@NonNull Realm realm) {
+                    RealmResults<ProductsModel> result = realm.where(ProductsModel.class).findAll();
+                    result.deleteAllFromRealm();
+                }
+            });
+
+            startActivity(new Intent(getContext(), HomeActivity.class));
+            Objects.requireNonNull(getActivity()).finish();
+
+            
             if (data.hasExtra(PaymentParams.TOKEN) && !data.getStringExtra(PaymentParams.TOKEN).isEmpty()) {
                 Log.e("Tag", data.getStringExtra(PaymentParams.TOKEN));
                 Log.e("Tag", data.getStringExtra(PaymentParams.CUSTOMER_EMAIL));
                 Log.e("Tag", data.getStringExtra(PaymentParams.CUSTOMER_PASSWORD));
 
-                startActivity(new Intent(getContext(), HomeActivity.class));
-                Objects.requireNonNull(getActivity()).finish();
+
             }
         }
     }
@@ -222,15 +234,15 @@ public class ConfirmFragment extends Fragment {
     private void Payment() {
 
         Intent in = new Intent(getActivity(), PayTabActivity.class);
-        in.putExtra(PaymentParams.MERCHANT_EMAIL, "Lammah.app.team@gmail.com"); //this a demo account for testing the sdk
-        in.putExtra(PaymentParams.SECRET_KEY, "2HmQMwfxdGt2CQtaJTdDhfkJxJItDKrFrOwekLMyrfB454ePYssgHNZfwIJ9saPTYl8j6URy9sDfxS4vkxL2kLhQt1ZVbOP99Ytg");//Add your Secret Key Here
+        in.putExtra(PaymentParams.MERCHANT_EMAIL, "pay@lammah.net"); //this a demo account for testing the sdk
+        in.putExtra(PaymentParams.SECRET_KEY, "HjFY9qb2tsFo5Kfy04jO77OGq7tgXDNEXtC7UOangPMlA2UA7doekdVLko1h2PW0iz7cniAD8mZIpTiw7HKrVFcf4dx72u7l3fxq");//Add your Secret Key Here
         in.putExtra(PaymentParams.LANGUAGE, PaymentParams.ENGLISH);
         in.putExtra(PaymentParams.TRANSACTION_TITLE, "Payment");
         in.putExtra(PaymentParams.AMOUNT, Double.valueOf(price));
 
         in.putExtra(PaymentParams.CURRENCY_CODE, "SAR");
-        in.putExtra(PaymentParams.CUSTOMER_PHONE_NUMBER, "00201111828535");
-        in.putExtra(PaymentParams.CUSTOMER_EMAIL, "Lammah.app.team@gmail.com");
+        in.putExtra(PaymentParams.CUSTOMER_PHONE_NUMBER, "00966537376868");
+        in.putExtra(PaymentParams.CUSTOMER_EMAIL, "pay@lammah.net");
         in.putExtra(PaymentParams.ORDER_ID, "123456");
         in.putExtra(PaymentParams.PRODUCT_NAME, "Product 1, Product 2");
 
