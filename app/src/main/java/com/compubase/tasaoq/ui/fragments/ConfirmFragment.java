@@ -200,6 +200,7 @@ public class ConfirmFragment extends Fragment {
 
     }
 
+    //
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -219,7 +220,7 @@ public class ConfirmFragment extends Fragment {
             startActivity(new Intent(getContext(), HomeActivity.class));
             Objects.requireNonNull(getActivity()).finish();
 
-            
+
             if (data.hasExtra(PaymentParams.TOKEN) && !data.getStringExtra(PaymentParams.TOKEN).isEmpty()) {
                 Log.e("Tag", data.getStringExtra(PaymentParams.TOKEN));
                 Log.e("Tag", data.getStringExtra(PaymentParams.CUSTOMER_EMAIL));
